@@ -6,11 +6,7 @@
 
     course = Course.find_by(trimester_id: term_id, coding_class_id: class_title_id)
 
-    student_enrollment_current = Enrollment.where(course_id: course).limit(2)
-
-    current_student_id = student_enrollment_current.map(&:student_id)
-
-    enrolled_students = Student.where(id: current_student_id)
+    enrolled_students = Enrollment.joins(:student).select(:'students.id', :'students.email').where(course_id: course).limit(2)
 
     enrolled_students.each do |student|
         puts "#{student.id}, #{student.email}"
