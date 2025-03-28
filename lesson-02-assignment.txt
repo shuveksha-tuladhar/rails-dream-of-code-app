@@ -1,0 +1,68 @@
+# Question 1: For each CodingClass, create a new Course record for that class in the Spring 2026 trimester
+
+    spring2026 = Trimester.find_by(year: '2026', term: 'Spring')
+
+    CodingClass.all.each do |coding_class|
+        Course.create(coding_class_id: coding_class.id, trimester_id: 8, max_enrollment: 25)
+    end
+
+# Question 2: Create a new student record and enroll the student in the Intro to Programming course for the Spring 2026 trimester. Find a mentor with no more than 2 students (enrollments) assigned and assign that mentor to your new student's enrollment.
+
+intro_class = CodingClass.find_by(title: 'Intro to Programming')
+spring2026 = Trimester.find_by(year: '2026', term: 'Spring')
+course_enroll = Course.find_by(coding_class_id: intro_class.id, trimester_id: spring2026.id)
+new_student = Student.create({first_name: 'Elina', last_name: 'Gillbert', email: 'elina.gillbert@test.com'})
+new_enrollment = Enrollment.create(course_id: course_enroll.id, student_id: new_student.id, final_grade: nil)
+
+new_mentor_assignment = MentorEnrollmentAssignment.joins(:mentor).having('COUNT(mentor_enrollment_assignments.mentor_id) <= 2').group('mentor_enrollment_assignments.mentor_id').first
+
+# Question 3 - Describe your project
+
+Overview:
+Project Name: Vista Rentals
+The Vista Rentals is a web application for property rental platform that connects property owners with potential renters, providing a seamless experience for booking short-term and long-term stays. 
+The platform allows users to list, discover, and book properties while offering features that enhance security, transparency, and convenience.
+
+Users & Roles:
+The platform has two main user roles:
+1. Property Owners (Hosts) – Users who list properties for rent.
+2. Renters (Guests) – Users who browse and book available properties.
+Each user has a profile and can interact with the platform based on their role.
+
+Core Features & User Scenarios:
+For Renters (Guests):
+- A renter can browse properties based on location, price, amenities, and availability.
+- A renter can view property details, including descriptions, images, reviews, and amenities.
+- A renter can book a property by selecting check-in and check-out dates.
+- A renter can manage bookings (view, cancel, or modify reservations).
+- A renter can leave reviews and ratings after their stay.
+- A renter can save favorite properties for future bookings.
+
+For Property Owners (Hosts):
+- A host can list a property with details such as name, address, price, description, images, and amenities.
+- A host can manage bookings (approve/reject booking requests).
+- A host can receive payments through secure transactions.
+- A host can update property availability and pricing.
+- A host can respond to reviews left by guests.
+
+User Flow Example: Booking a Property
+1. A renter searches for properties by location, date, and filters.
+2. The renter selects a property and views its details, including reviews and images.
+3. The renter proceeds with the booking by selecting dates and making a payment.
+4. The host receives a notification and approves the booking.
+5. The renter receives a confirmation and check-in details.
+6. After their stay, the renter can leave a review about their experience.
+
+# Question 4 - Design the data model for your project
+
+Data Model:
+The schema consists of five main tables where users can list, book, and review properties:
+1. Users: Stores user information, including login credentials, contact details, and profile avatars. Users can own multiple properties, make bookings, and write reviews.
+2. Properties: Represents rental listings, including details such as address, pricing, and accommodations (e.g., bedrooms, bathrooms, and max guest capacity). Each property belongs to a user and can have multiple images, bookings, reviews, and amenities.
+3. Bookings: Tracks reservations made by users, storing information about the property booked, the user who made the booking, and the start and end dates of the stay.
+4. PropertyImages: Stores image URLs associated with a property, helping enhance the listing with visual representation.
+5. Reviews: Allows users to provide feedback on properties they have booked, including a rating and optional text review.
+
+The ERD (lesson-2-erd.png) represents the following relationships:
+- One-to-Many: Users → Properties, Users → Bookings, Users → Reviews.
+- One-to-Many: Properties → Bookings, Properties → Reviews, Properties → PropertyImages.
