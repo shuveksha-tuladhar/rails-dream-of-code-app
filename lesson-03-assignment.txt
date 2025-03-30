@@ -1,0 +1,105 @@
+# Assignment 3
+
+1. What tables do you need to add? Decide on table names and their associations to each other and any existing tables/models.
+We need to add two new tables named topics and lesson_topics and update an existing table lessons.
+    topics – Stores topics covered in lessons.
+    lesson_topics – A join table that establishes a many-to-many relationship between lessons and topics.
+    lessons (existing) – Updated to ensure proper relationships with courses and topics.
+
+2. What columns are necessary for the associations you decided on? 
+    A topic can be associated with many lessons through lesson_topics.
+    LessonTopic establishes the many-to-many relationship between Lesson and Topic.
+    A lesson belongs to one course.
+    A lesson can be associated with many topics through lesson_topics.
+
+3. What other columns (if any) need to be included on the tables? What other data needs to be stored? Write out each table's name and column names with data types.
+Table: topics
+--------------------------------
+id          | integer (primary key)
+title       | string (unique)
+created_at  | datetime
+updated_at  | datetime
+
+Table: lesson_topics 
+--------------------------------
+id          | integer (primary key)
+lesson_id   | integer (foreign key, references lessons)
+topic_id    | integer (foreign key, references topics)
+created_at  | datetime
+updated_at  | datetime
+
+Table: lessons
+--------------------------------
+id                  | integer (primary key)
+course_id           | integer (foreign key, references courses)
+title               | string (unique, not null)
+assignment_due_date | datetime
+created_at          | datetime
+updated_at          | datetime
+
+# Database Relationships Summary
+    A Lesson belongs to a Course.
+    A Lesson has many Topics through LessonTopics.
+    A Topic has many Lessons through LessonTopics.
+    LessonTopic belongs to both Lesson and Topic.
+
+# Generate schema table and migration
+
+bin/rails generate migration create_topics
+
+class CreateTopics < ActiveRecord::Migration[8.0]
+  def change
+    create_table :topics do |t|
+      t.string :title, null: false
+      t.timestamps
+    end
+  end
+end
+
+bin/rails generate model Topic
+
+bin/rails generate migration create_lesson_topics
+
+class CreateLessonTopics < ActiveRecord::Migration[8.0]
+  def change
+    create_table :lesson_topics do |t|
+      t.references :lesson, null: false, foreign_key: true
+      t.references :topic, null: false, foreign_key: true
+      t.timestamps
+    end
+  end
+end
+
+bin/rails generate model lesson_topic
+
+Models: 
+
+class Lesson < ApplicationRecord
+  belongs_to :course
+  has_many :lesson_topics
+  has_many :topics, through: :lesson_topics
+end
+
+class Topic < ApplicationRecord
+    has_many :lesson_topics
+    has_many :lessons, through: :lesson_topics
+  end
+
+class LessonTopic < ApplicationRecord
+    belongs_to :lesson
+    belongs_to :topic
+  end
+
+# Test in Rails Console:
+
+bin/rails console
+
+sql = Topic.create(title: "SQL")
+css = Topic.create(title: "CSS")
+
+lesson = Lesson.create(title: "Introduction to Databases", course_id: 1)
+
+lesson.topics << sql
+lesson.topics << css
+
+lesson.topics 
