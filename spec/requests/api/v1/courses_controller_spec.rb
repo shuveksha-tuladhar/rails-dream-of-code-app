@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Api::V1::Courses", type: :request, skip: true do
+RSpec.describe "Api::V1::Courses", type: :request do
   # Set up current, past and future trimesters and courses for each
   let!(:current_trimester) {
     Trimester.create!(
@@ -31,12 +31,12 @@ RSpec.describe "Api::V1::Courses", type: :request, skip: true do
       title: "Intro to Javascript"
     )
   }
-  let!(:past_course) {
+  let(:past_course) {
     Course.create!(
       coding_class_id: coding_class.id,
       trimester_id: past_trimester.id)
   }
-  let!(:future_course) {
+  let(:future_course) {
     Course.create!(
       coding_class_id: coding_class.id,
       trimester_id: future_trimester.id)
@@ -55,6 +55,16 @@ RSpec.describe "Api::V1::Courses", type: :request, skip: true do
       expect(JSON.parse(response.body)['courses']).to be_an(Array)
       expect(JSON.parse(response.body)['courses'].size).to eq(1)
       expect(JSON.parse(response.body)['courses'].first['id']).to eq(current_course.id)
+    end
+  end
+
+  describe "/api/v1/courses/:id" do
+    it "returns the course and enrolled students" do
+      get "/api/v1/courses/#{current_course.id}"
+
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)['course']['id']).to eq(current_course.id)
+      expect(JSON.parse(response.body)['students']).to be_an(Array)    
     end
   end
 end

@@ -1,1 +1,43 @@
 <h1>Dashboard</h1>
+<% if @current_trimester %>
+<h3><%= "Current Trimester: #{@current_trimester.term} - #{@current_trimester.year}" %></h3>
+<ul>
+ <% @current_trimester.courses.each do |course| %>
+   <li>
+         <%= link_to course.coding_class.title, course_path(course) %>
+        <p><%= course.coding_class.description %></p>
+    </li>
+ <% end %>
+</ul>
+<% else %>
+    <p>No current trimester available.</p>
+<% end %>
+
+<% if @upcoming_trimester %>
+    <h3><%= "Upcoming Trimester: #{@upcoming_trimester.term} - #{@upcoming_trimester.year}" %></h3>
+    <ul>
+        <% @upcoming_trimester.courses.each do |course| %>
+            <li>
+                <%= link_to course.coding_class.title, course_path(course) %>
+                <p><%= course.coding_class.description %></p>
+            </li>
+        <% end %>
+    </ul>
+<% else %>
+    <p> No upcoming trimester available.</p>
+<% end %>
+
+<% if @past_trimester %>
+    <h3><%= "Past Trimester: #{@past_trimester.term} - #{@past_trimester.year}" %></h3>
+    <ul>
+    <% @past_trimester.courses.each do |course| %> 
+        <li>
+          <%= link_to course.coding_class.title, course_path(course) %>
+      
+        </li>
+      <% end %>
+    </ul>
+<% else %>
+    <p>No past trimester available.</p>
+<% end %>
+

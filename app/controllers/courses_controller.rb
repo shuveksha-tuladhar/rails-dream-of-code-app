@@ -6,8 +6,20 @@ class CoursesController < ApplicationController
     @courses = Course.all
   end
 
+    # GET /api/v1/courses
+    def indexApi
+      @courses = Course.all
+      render json: {  courses: @courses }
+    end
+
   # GET /courses/1 or /courses/1.json
   def show
+  end
+
+  # GET /api/v1/courses/1
+  def showApi
+    @course = Course.find(params.expect(:id))
+    render json: {course: @course, students: @course.student_name_list}
   end
 
   # GET /courses/new
