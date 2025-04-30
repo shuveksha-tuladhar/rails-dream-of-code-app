@@ -21,7 +21,8 @@ Rails.application.routes.draw do
 
   get "/trimesters", to: "trimesters#index"
   get "/trimesters/:id", to: "trimesters#show"
-
   get "/dashboard", to: "admin_dashboard#index"
+  get "/api/v1/courses", to: "courses#indexApi"
+  get "/api/v1/courses/:id", to: "courses#showApi"
 
 end
