@@ -3,8 +3,8 @@ class SubmissionsController < ApplicationController
   def new
     @course = Course.find(params[:course_id])
     @submission = Submission.new
-    @enrollments # TODO: What set of enrollments should be listed in the dropdown?
-    @lessons # TODO: What set of lessons should be listed in the dropdown?
+    @enrollments = Enrollment.where(course_id: params[:course_id])
+    @lessons = Lesson.where(course_id: params[:course_id])
   end
 
   def create

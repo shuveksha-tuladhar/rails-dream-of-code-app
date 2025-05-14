@@ -25,6 +25,8 @@ class CoursesController < ApplicationController
   # GET /courses/new
   def new
     @course = Course.new
+    @coding_classes = CodingClass.all
+    @trimesters = Trimester.all
   end
 
   # GET /courses/1/edit
@@ -55,6 +57,23 @@ class CoursesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to courses_path, status: :see_other, notice: "Course was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def create
+    @course = Course.new(course_params)
+
+    respond_to do |format|
+      if @course.save
+        # Redirect to the course page
+        format.html { redirect_to @course, notice: "Course was successfully created." }
+        format.json { render :show, status: :created, location: @course }
+      else
+        # Re-render the new course form. The view already contains
+        # logic to display the errors in @course.errors
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @course.errors, status: :unprocessable_entity }
+      end
     end
   end
 

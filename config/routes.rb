@@ -19,6 +19,10 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#index"
 
+  resources :courses do
+    resources :submissions
+  end
+
   get "/trimesters", to: "trimesters#index"
   get "/trimesters/:id", to: "trimesters#show"
   get "/dashboard", to: "admin_dashboard#index"
