@@ -23,6 +23,8 @@ Rails.application.routes.draw do
     resources :submissions
   end
 
+  resources :trimesters, only: [:edit, :update]
+
   get "/trimesters", to: "trimesters#index"
   get "/trimesters/:id", to: "trimesters#show"
   get "/dashboard", to: "admin_dashboard#index"

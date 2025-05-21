@@ -3,8 +3,8 @@ class SubmissionsController < ApplicationController
   def new
     @course = Course.find(params[:course_id])
     @submission = Submission.new
-    @enrollments = Enrollment.where(course_id: params[:course_id])
-    @lessons = Lesson.where(course_id: params[:course_id])
+    @enrollments = @course.enrollments
+    @lessons = @course.lessons
   end
 
   def create
@@ -14,8 +14,8 @@ class SubmissionsController < ApplicationController
     if @submission.save
       redirect_to course_path(@course), notice: 'Submission was successfully created.'
     else
-      @enrollments # TODO: Set this up just as in the new action
-      @lessons # TODO: Set this up just as in the new action
+      @enrollments = @course.enrollments
+      @lessons = @course.lessons
       render :new
     end
   end
@@ -31,6 +31,6 @@ class SubmissionsController < ApplicationController
   private
     # Only allow a list of trusted parameters through.
     def submission_params
-      params.require(:submission).permit(:lesson_id, :enrollment_id, :mentor_id, :review_result, :reviewed_at)
+      params.require(:submission).permit(:lesson_id, :enrollment_id, :mentor_id, :review_result, :reviewed_at, :url)
     end
 end
