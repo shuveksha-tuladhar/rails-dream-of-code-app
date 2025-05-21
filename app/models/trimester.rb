@@ -1,4 +1,8 @@
 class Trimester < ApplicationRecord
+  def display_name
+    "#{term} #{year}"
+  end
+  
   has_many :courses
 
   validates :start_date, presence: true
