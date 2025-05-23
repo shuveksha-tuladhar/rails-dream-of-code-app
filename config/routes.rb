@@ -31,4 +31,8 @@ Rails.application.routes.draw do
   get "/api/v1/courses", to: "courses#indexApi"
   get "/api/v1/courses/:id", to: "courses#showApi"
 
+  get 'login', to: 'sessions#new'
+  post 'login', to: 'sessions#create'
+  delete 'logout', to: 'sessions#destroy'
+
 end
